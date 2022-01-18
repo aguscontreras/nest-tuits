@@ -11,35 +11,38 @@ import {
 
 import { TuitsService } from './tuits.service';
 import { Tuit } from './tuit.entity';
-import { CreateTuitDto, UpdateTuitDto } from './dto';
+import { CreateTuitDto, PaginationQueryDto, UpdateTuitDto } from './dto';
 
 @Controller('tuits')
 export class TuitsController {
   constructor(private readonly tuitsService: TuitsService) {}
 
   @Get()
-  getTuits(@Query() filterQuery): Tuit[] {
-    const { searchTerm, orderBy } = filterQuery;
-    return this.tuitsService.getTuits();
+  getTuits(@Query() pagination: PaginationQueryDto): Promise<Tuit[]> {
+    // const { searchTerm, orderBy } = filterQuery;
+    return this.tuitsService.getTuits(pagination);
   }
 
   @Get(':id')
-  getTuit(@Param('id') id: string): Tuit {
+  getTuit(@Param('id') id: number): Promise<Tuit> {
     return this.tuitsService.getTuit(id);
   }
 
   @Post()
-  createTuit(@Body() message: CreateTuitDto) {
+  createTuit(@Body() message: CreateTuitDto): Promise<Tuit> {
     return this.tuitsService.createTuit(message);
   }
 
   @Patch(':id')
-  updateTuit(@Param('id') id: string, @Body() tuit: UpdateTuitDto): Tuit {
+  updateTuit(
+    @Param('id') id: number,
+    @Body() tuit: UpdateTuitDto,
+  ): Promise<Tuit> {
     return this.tuitsService.updateTuit(id, tuit);
   }
 
   @Delete(':id')
-  removeTuit(@Param('id') id: string) {
+  removeTuit(@Param('id') id: number): Promise<void> {
     return this.tuitsService.removeTuit(id);
   }
 }
